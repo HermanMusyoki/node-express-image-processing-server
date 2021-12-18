@@ -10,7 +10,7 @@ function filename (request, file ,callback) { callback(null, file.originalname) 
 function fileFilter(request, file, callback) {
   if (file.mimetype !== 'image/png') {
     request.fileValidationError = 'Wrong file type';
-    callback (null, false, {Error : 'Wrong file type'})
+    callback (null, false, new Error('Wrong file type'))
   } else {
     callback (null, true);
   }
