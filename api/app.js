@@ -6,7 +6,6 @@ const router = require('./src/router')
 const app = express();
 
 const pathToIndex =path.resolve (__dirname, '../client/index.html');
-
 app.use('/', router);
 app.use(express.static(path.resolve(__dirname, 'uploads')));
 app.use('/*', function (req, res) {
