@@ -9,38 +9,48 @@ function uploadPathResolver(filename) {
 }
 
 function imageProcessor (filename) {
+ const resizeWorkerFinished = false;
+ const monochromeWorkerFinished = false;
 
   const sourcePath = uploadPathResolver(filename);
-
   const resizedDestination = uploadPathResolver('resized-' + filename);
   const monochromeDestination = uploadPathResolver('monochrome-' + filename);
- let resizeWorkerFinished = false;
- let monochromeWorkerFinished = false;
+
 
 return new Promise((resolve, reject) => {
   if(ismainThread){
     try {
-      const resizeWorker = new Worker(pathToResizeWorker,{workerData: {source: sourcePath, destination : resizedDestination},});
-      reject();
-      const monochromeWorker = new Worker(pathToMonochromeWorker,{workerData : {source : sourcePath, destination : monochromeDestination},});
+      const resizeWorker = new Worker(pathToResizeWorker, {
+        workerData: {
+          source: sourcePath, 
+          destination: resizedDestination,
+          },
+      });
+
+      const monochromeWorker = new Worker(pathToMonochromeWorker, {
+        workerData: {
+          source: sourcePath, 
+          destination: monochromeDestination,
+          },
+      });
 
       resizeWorker.on('message', (message) => {
-        let resizeWorkerFinished = true;
+        const resizeWorkerFinished = true;
         if(monochromeWorkerFinished){
           resolve('resizeWorker finished processing');
         }
       });
-      resizeWorker.on('error',(error) => {
+      resizeWorker.on('error', (error) => {
         reject(new Error(error.message));
       });
       resizeWorker.on('exit', (code) => {
         if(code !== 0) {
-          reject( new Error('Exited with status code ' + code));
+          reject(new Error('Exited with status code ' + code));
         }
       });
 
       monochromeWorker.on('message', (message) => {
-        let monochromeWorkerFinished = true;
+        const monochromeWorkerFinished = true;
         if(resizeWorkerFinished){
           resolve('monochromeWorker finished processing')
         }
@@ -51,7 +61,7 @@ return new Promise((resolve, reject) => {
       });
        monochromeWorker.on('exit', (code) => {
         if(code !== 0) {
-          reject( new Error('Exited with status code ' + code));
+          reject(new Error('Exited with status code ' + code));
         }
       });
     }
@@ -60,9 +70,9 @@ return new Promise((resolve, reject) => {
       }
     
   } else {
-    reject ( new Error('not on main thread'))
+    reject(new Error('not on main thread'))
 
-  }
+  } 
 
 });
 }
