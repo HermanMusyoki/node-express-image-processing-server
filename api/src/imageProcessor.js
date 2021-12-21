@@ -4,11 +4,11 @@ const {Worker, isMainThread} = require('worker_threads')
 const pathToResizeWorker = path.resolve(__dirname, 'resizeWorker.js');
 const pathToMonochromeWorker = path.resolve(__dirname, 'monochromeWorker.js');
 
-function uploadPathResolver(filename) {
+const uploadPathResolver = (filename) => {
   return path.resolve(__dirname, '../uploads', filename)
 }
 
-function imageProcessor (filename) {
+const imageProcessor = (filename) => {
  const resizeWorkerFinished = false;
  const monochromeWorkerFinished = false;
 
@@ -35,7 +35,7 @@ return new Promise((resolve, reject) => {
           });
 
       resizeWorker.on('message', (message) => {
-        const resizeWorkerFinished = true;
+        resizeWorkerFinished = true;
         if(monochromeWorkerFinished){
           resolve('resizeWorker finished processing');
         }
@@ -50,9 +50,9 @@ return new Promise((resolve, reject) => {
       });
 
       monochromeWorker.on('message', (message) => {
-        const monochromeWorkerFinished = true;
-        if(resizeWorkerFinished){
-          resolve('monochromeWorker finished processing')
+        monochromeWorkerFinished = true;
+        if(resizeWorkerFinished) {
+          resolve('monochromeWorker finished processing');
         }
 
       });
@@ -70,12 +70,12 @@ return new Promise((resolve, reject) => {
       }
     
   } else {
-    reject(new Error('not on main thread'))
+    reject(new Error('not on main thread'));
 
   } 
 
 });
-}
+};
 
 
 module.exports = imageProcessor;
