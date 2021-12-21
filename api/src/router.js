@@ -20,17 +20,18 @@ function fileFilter(request, file, callback) {
   }
 }
 router.post('/upload',upload.single('photo'),async function (request, response) {
-  try {
+  
+  if(request.fileValidationError)
+    return response.status(400).json({error: request.fileValidationError});
+    try {
   await imageProcessor(request.file.filename)
 }
 catch (error) {
   console.error(error);
 }
-  if(request.fileValidationError){
-    return response.status(400).json({error: request.fileValidationError});
-  } else{
-    return response.status(201).json({success: true})
-  }
+  
+return response.status(201).json({success: true})
+
 });
 
 router.get('/photo-viewer', function (request, response) {

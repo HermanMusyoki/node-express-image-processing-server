@@ -20,9 +20,11 @@ function imageProcessor (filename) {
 return new Promise((resolve, reject) => {
   if(ismainThread){
     try {
-      const resizeWorker = new Worker(pathToResizeWorker,{workerData: {source: sourcePath, destination : resizedDestination},});
-      reject();
-      const monochromeWorker = new Worker(pathToMonochromeWorker,{workerData : {source : sourcePath, destination : monochromeDestination},});
+      const resizeWorker = new Worker(pathToResizeWorker,{workerData: {source: sourcePath, destination : resizedDestination},
+      });
+
+      const monochromeWorker = new Worker(pathToMonochromeWorker,{workerData : {source : sourcePath, destination : monochromeDestination},
+      });
 
       resizeWorker.on('message', (message) => {
         let resizeWorkerFinished = true;
@@ -35,7 +37,7 @@ return new Promise((resolve, reject) => {
       });
       resizeWorker.on('exit', (code) => {
         if(code !== 0) {
-          reject( new Error('Exited with status code ' + code));
+          reject(new Error('Exited with status code ' + code));
         }
       });
 
@@ -51,7 +53,7 @@ return new Promise((resolve, reject) => {
       });
        monochromeWorker.on('exit', (code) => {
         if(code !== 0) {
-          reject( new Error('Exited with status code ' + code));
+          reject(new Error('Exited with status code ' + code));
         }
       });
     }
