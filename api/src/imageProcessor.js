@@ -32,7 +32,7 @@ return new Promise((resolve, reject) => {
           source: sourcePath, 
           destination: monochromeDestination,
           },
-      });
+          });
 
       resizeWorker.on('message', (message) => {
         const resizeWorkerFinished = true;
